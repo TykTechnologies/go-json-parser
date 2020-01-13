@@ -19,15 +19,16 @@ func _() {
 	_ = x[LiteralNull-8]
 	_ = x[LiteralTrue-9]
 	_ = x[Quote-10]
-	_ = x[Number-11]
-	_ = x[Minus-12]
-	_ = x[Plus-13]
-	_ = x[EOF-14]
+	_ = x[String-11]
+	_ = x[Number-12]
+	_ = x[Minus-13]
+	_ = x[Plus-14]
+	_ = x[EOF-15]
 }
 
-const _Keyword_name = "UNDEFINEDBeginArrayBeginObjectEndArrayEndObjectNameSeparatorValueSeparatorLiteralFalseLiteralNullLiteralTrueQuoteNumberMinusPlusEOF"
+const _Keyword_name = "UNDEFINEDBeginArrayBeginObjectEndArrayEndObjectNameSeparatorValueSeparatorLiteralFalseLiteralNullLiteralTrueQuoteStringNumberMinusPlusEOF"
 
-var _Keyword_index = [...]uint8{0, 9, 19, 30, 38, 47, 60, 74, 86, 97, 108, 113, 119, 124, 128, 131}
+var _Keyword_index = [...]uint8{0, 9, 19, 30, 38, 47, 60, 74, 86, 97, 108, 113, 119, 125, 130, 134, 137}
 
 func (i Keyword) String() string {
 	if i < 0 || i >= Keyword(len(_Keyword_index)-1) {

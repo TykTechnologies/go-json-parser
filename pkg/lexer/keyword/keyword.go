@@ -19,6 +19,7 @@ const (
 	LiteralTrue
 
 	Quote
+	String
 	Number
 	Minus
 	Plus

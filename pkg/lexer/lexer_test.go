@@ -71,6 +71,7 @@ func TestLexer_Read(t *testing.T) {
 		run("   {", mustPeekWhitespaceLength(3))
 	})
 
+	// Numbers
 	t.Run("read number", func(t *testing.T) {
 		run("123", mustRead(keyword.Number, "123"))
 	})
@@ -103,6 +104,40 @@ func TestLexer_Read(t *testing.T) {
 	t.Run("read electron charge/mass ratio", func(t *testing.T) {
 		run("-1.758E11", mustRead(keyword.Minus, "-"),
 			mustRead(keyword.Number, "1.758E11"))
+	})
+
+	// Strings
+	t.Run("read string", func(t *testing.T) {
+		run("\"foo\"", mustRead(keyword.String, "foo"))
+	})
+	t.Run("read single line string with leading/trailing whitespace", func(t *testing.T) {
+		run("\" 	foo	 \"", mustRead(keyword.String, " 	foo	 "))
+	})
+
+	// Structural Characters
+	t.Run("read begin array", func(t *testing.T) {
+		run("[", mustRead(keyword.BeginArray, "["))
+	})
+	t.Run("read end array", func(t *testing.T) {
+		run("]", mustRead(keyword.EndArray, "]"))
+	})
+	t.Run("read begin object", func(t *testing.T) {
+		run("{", mustRead(keyword.BeginObject, "{"))
+	})
+	t.Run("read end object", func(t *testing.T) {
+		run("}", mustRead(keyword.EndObject, "}"))
+	})
+	t.Run("read true", func(t *testing.T) {
+		run("true", mustRead(keyword.LiteralTrue, "true"))
+	})
+	t.Run("read true with space", func(t *testing.T) {
+		run(" true ", mustRead(keyword.LiteralTrue, "true"))
+	})
+	t.Run("read false", func(t *testing.T) {
+		run("false", mustRead(keyword.LiteralFalse, "false"))
+	})
+	t.Run("read null", func(t *testing.T) {
+		run("null", mustRead(keyword.LiteralNull, "null"))
 	})
 }
 

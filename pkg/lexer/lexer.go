@@ -38,6 +38,15 @@ func (l *Lexer) Read() (tok token.Token) {
 	case runes.Quote:
 		l.readString(&tok)
 		return
+	case runes.LiteralN:
+		l.ReadNull(&tok)
+		return
+	case runes.LiteralF:
+		l.readFalse(&tok)
+		return
+	case runes.LiteralT:
+		l.readTrue(&tok)
+		return
 	}
 
 	if runeIsDigit(next) {
@@ -49,25 +58,67 @@ func (l *Lexer) Read() (tok token.Token) {
 	return
 }
 
-func (l *Lexer) readString(tok *token.Token) {
-	tok.Keyword = keyword.Quote
+func (l *Lexer) ReadNull(tok *token.Token) {
+	tok.Keyword = keyword.LiteralNull
+	tok.SetStart(l.input.InputPosition - 1)
 
+	remaining := []byte("ull")
+
+	for _, expected := range remaining {
+		next := l.readRune()
+		if next != expected {
+			println("expected ", string(expected), " got ", string(next))
+			tok.SetEnd(l.input.InputPosition - 1)
+			return
+		}
+	}
+	tok.SetEnd(l.input.InputPosition)
+}
+
+func (l *Lexer) readFalse(tok *token.Token) {
+	tok.Keyword = keyword.LiteralFalse
+	tok.SetStart(l.input.InputPosition - 1)
+
+	remaining := []byte("alse")
+
+	for _, expected := range remaining {
+		next := l.readRune()
+		if next != expected {
+			println("expected ", string(expected), " got ", string(next))
+			tok.SetEnd(l.input.InputPosition - 1)
+			return
+		}
+	}
+	tok.SetEnd(l.input.InputPosition)
+}
+
+func (l *Lexer) readTrue(tok *token.Token) {
+	tok.Keyword = keyword.LiteralTrue
+	tok.SetStart(l.input.InputPosition - 1)
+
+	remaining := []byte("rue")
+
+	for _, expected := range remaining {
+		next := l.readRune()
+		if next != expected {
+			println("expected ", string(expected), " got ", string(next))
+			tok.SetEnd(l.input.InputPosition - 1)
+			return
+		}
+	}
+	tok.SetEnd(l.input.InputPosition)
+}
+
+func (l *Lexer) readString(tok *token.Token) {
+	tok.Keyword = keyword.String
 	tok.SetStart(l.input.InputPosition)
 
 	escaped := false
-	whitespaceCount := 0
-	reachedFirstNonWhitespace := false
-	leadingWhitespaceToken := 0
-
 	for {
 		next := l.readRune()
 		switch next {
-		case runes.Space, runes.Tab:
-			whitespaceCount++
 		case runes.EOF:
 			tok.SetEnd(l.input.InputPosition)
-			tok.Literal.Start += uint32(leadingWhitespaceToken)
-			tok.Literal.End -= uint32(whitespaceCount)
 			return
 		case runes.Quote, runes.CarriageReturn, runes.LineFeed:
 			if escaped {
@@ -76,19 +127,11 @@ func (l *Lexer) readString(tok *token.Token) {
 			}
 
 			tok.SetEnd(l.input.InputPosition - 1)
-			tok.Literal.Start += uint32(leadingWhitespaceToken)
-			tok.Literal.End -= uint32(whitespaceCount)
 			return
 		case runes.Backslash:
 			escaped = !escaped
-			whitespaceCount = 0
 		default:
-			if !reachedFirstNonWhitespace {
-				reachedFirstNonWhitespace = true
-				leadingWhitespaceToken = whitespaceCount
-			}
 			escaped = false
-			whitespaceCount = 0
 		}
 	}
 }

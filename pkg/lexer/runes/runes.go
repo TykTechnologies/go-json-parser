@@ -10,9 +10,9 @@ const (
 	CarriageReturn = '\r'
 
 	// Literal Values
-	LiteralFalse = 'f'
-	LiteralNull  = 'n'
-	LiteralTrue  = 't'
+	LiteralF = 'f'
+	LiteralN = 'n'
+	LiteralT = 't'
 
 	// Strucural Characters
 	LeftBracket  = '['
